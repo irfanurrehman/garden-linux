@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"path"
 	"runtime"
 	"strings"
 	"syscall"
@@ -321,6 +322,8 @@ func Main() {
 		panic(fmt.Sprintf("Value of -externalIP %s could not be converted to an IP", *externalIP))
 	}
 
+	setuper := container_pool.NewSetuper(path.Join(*binPath, "..", "skeleton", "bin", "wshd"))
+
 	pool := container_pool.New(
 		logger,
 		*binPath,
@@ -339,6 +342,7 @@ func Main() {
 		strings.Split(*allowNetworks, ","),
 		runner,
 		quotaManager,
+		setuper,
 	)
 
 	systemInfo := system_info.NewProvider(*depotPath)
